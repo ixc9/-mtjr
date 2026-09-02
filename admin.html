@@ -56,31 +56,15 @@
 </div>
 
 <script>
-    // البيانات المشفرة بحساب SHA-256
-    // اسم المستخدم: 1234
-    // كلمة المرور: 99336048
-    const AUTH_CONFIG = {
-        userHash: "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", 
-        passHash: "c9735d49fbd47ff9eb5b37e8c14a2dbcc7d04499ec76878e12d46e04f039ffaa"  
-    };
-
-    async function hashString(message) {
-        const msgUint8 = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function login() {
+    function login() {
         const userVal = document.getElementById('username').value.trim();
         const passVal = document.getElementById('password').value.trim();
 
-        const inputUserHash = await hashString(userVal);
-        const inputPassHash = await hashString(passVal);
-
-        if (inputUserHash === AUTH_CONFIG.userHash && inputPassHash === AUTH_CONFIG.passHash) {
+        // مطابقة مباشرة بدون تعقيد
+        if (userVal === "1234" && passVal === "99336048") {
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('errorMsg').style.display = 'none';
             loadOrders();
         } else {
             document.getElementById('errorMsg').style.display = 'block';
