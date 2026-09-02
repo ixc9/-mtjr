@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - بقالة إبراهيم علي</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .login-box, .dashboard { max-width: 800px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .hidden { display: none; }
+        h2 { color: #2c3e50; }
+        input, button { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        button { background: #2980b9; color: #fff; font-weight: bold; border: none; cursor: pointer; }
+        button:hover { background: #1c5980; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+        th { background: #f8f9fa; }
+        .badge { padding: 4px 8px; border-radius: 4px; background: #ffeaa7; color: #d63031; font-size: 12px; font-weight: bold; }
+        .clear-btn { background: #e74c3c; width: auto; padding: 8px 15px; float: left; }
+    </style>
+</head>
+<body>
+
+<div id="loginSection" class="login-box">
+    <h2>تسجيل دخول الأدمن</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button onclick="login()">دخول</button>
+    <p id="errorMsg" style="color: red; display: none; margin-top: 10px;">بيانات الدخول غير صحيحة!</p>
+</div>
+
+<div id="dashboardSection" class="dashboard hidden">
+    <button class="clear-btn" onclick="clearOrders()">مسح كافة الطلبات</button>
+    <h2>طلبات الواردة - بقالة إبراهيم علي</h2>
+    <hr>
+    <table>
+        <thead>
+            <tr>
+                <th>الوقت</th>
+                <th>تفاصيل الطلب</th>
+                <th>نوع السيارة</th>
+                <th>لون السيارة</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody id="ordersTable"></tbody>
+    </table>
+</div>
+
+<script>
+    // البيانات المشفّرة (SHA-256)
+    const AUTH_CONFIG = {
+        userHash: "3f2e1e0d37e2832810f88198f828ff7227e7d6928e0e64ffc70a84e56592d3b2", // تجزئة "إبراهيم"
+        passHash: "c9735d49fbd47ff9eb5b37e8c14a2dbcc7d04499ec76878e12d46e04f039ffaa"  // تجزئة "99336048"
+    };
+
+    // دالة التشفير باستخدام Web Crypto API
+    async function hashString(message) {
+        const msgUint8 = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function login() {
+        const userVal = document.getElementById('username').value.trim();
+        const passVal = document.getElementById('password').value.trim();
+
+        const inputUserHash = await hashString(userVal);
+        const inputPassHash = await hashString(passVal);
+
+        if (inputUserHash === AUTH_CONFIG.userHash && inputPassHash === AUTH_CONFIG.passHash) {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            loadOrders();
+        } else {
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    }
+
+    function loadOrders() {
+        const orders = JSON.parse(localStorage.getItem('grocery_orders')) || [];
+        const tbody = document.getElementById('ordersTable');
+        tbody.innerHTML = '';
+
+        if (orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد طلبات جديدة حالياً.</td></tr>';
+            return;
+        }
+
+        orders.reverse().forEach(order => {
+            const row = `<tr>
+                <td>${order.time}</td>
+                <td>${order.details}</td>
+                <td>${order.carModel}</td>
+                <td>${order.carColor}</td>
+                <td><span class="badge">${order.status}</span></td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function clearOrders() {
+        if (confirm('هل أنت تأكد من مسح جميع الطلبات؟')) {
+            localStorage.removeItem('grocery_orders');
+            loadOrders();
+        }
+    }
+</script>
+
+</body>
+</html>
