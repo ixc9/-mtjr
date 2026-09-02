@@ -5,14 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بقالة إبراهيم علي</title>
     <style>
-        body { font-family: system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 600px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin: 0 auto; }
         h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
         label { font-weight: bold; display: block; margin-top: 15px; margin-bottom: 5px; }
-        input, textarea, select, button { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        input, textarea, button { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
         textarea { resize: vertical; height: 100px; }
-        button { background: #27ae60; color: #fff; font-weight: bold; border: none; margin-top: 20px; cursor: pointer; font-size: 16px; }
-        button:hover { background: #219150; }
+        .submit-btn { background: #27ae60; color: #fff; font-weight: bold; border: none; margin-top: 20px; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .submit-btn:hover { background: #219150; }
+        .admin-link-btn {
+            display: block;
+            text-align: center;
+            background: #f8f9fa;
+            color: #7f8c8d;
+            border: 1px dashed #bdc3c7;
+            padding: 10px;
+            margin-top: 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .admin-link-btn:hover { background: #2c3e50; color: #ffffff; border-color: #2c3e50; }
         .success-msg { background: #e8f8f5; color: #27ae60; padding: 10px; border-radius: 6px; text-align: center; display: none; margin-top: 15px; }
     </style>
 </head>
@@ -30,9 +45,12 @@
         <label for="carColor">لون السيارة:</label>
         <input type="text" id="carColor" placeholder="مثال: أبيض / أسود" required>
 
-        <button type="submit">إرسال الطلب</button>
+        <button type="submit" class="submit-btn">إرسال الطلب</button>
     </form>
     <div id="successMsg" class="success-msg">تم إرسال طلبك بنجاح! سيتم تجهيزه فوراً.</div>
+
+    <!-- زر دخول لوحة التحكم -->
+    <a href="admin.html" class="admin-link-btn">🔐 دخول لوحة التحكم (الأدمن)</a>
 </div>
 
 <script>
